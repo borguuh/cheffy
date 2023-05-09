@@ -36,6 +36,9 @@ const userRoute = require("./routes/User/user_route");
 const wishlistRoute = require("./routes/User/wishlist_route");
 const bookingRoute = require("./routes/User/booking_route");
 
+// add home location
+const homeRoute = require("./routes/User/home_route");
+
 // Connection String
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -66,6 +69,7 @@ app.use("/v1/user", roomateRoute);
 app.use("/v1/user", userRoute);
 app.use("/v1/user", wishlistRoute);
 app.use("/v1/user", bookingRoute);
+app.use("/v1/user", homeRoute);
 
 // Express's error handling middleware
 // Everytime either the error is thrown by 'throw' keyword or by calling 'next(error)',

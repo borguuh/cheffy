@@ -6,7 +6,11 @@ exports.getAllUsers = catchAsyncFunc(async (req, res, next) => {
   const result = await User.find();
   return helper.sendSuccess(res, result, req, "Success");
 });
-
+exports.getUserById = catchAsyncFunc(async (req, res, next) => {
+  const { user_id } = req.query;
+  const result = await User.find({ _id: user_id });
+  return helper.sendSuccess(res, result, req, "Success");
+});
 exports.addUser = catchAsyncFunc(async (req, res, next) => {
   const userData = req.body;
   const is_exist = await User.findOne({ email: userData.email });
@@ -22,7 +26,7 @@ exports.updateUser = catchAsyncFunc(async (req, res, next) => {
   const result = await User.findByIdAndUpdate(user_id, userData, {
     new: true,
     runValidators: true,
-    userFindANdModify: false,
+    useFindAndModify: false,
   });
   return helper.sendSuccess(res, result, req, "Success");
 });

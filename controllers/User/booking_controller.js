@@ -79,8 +79,8 @@ exports.updateBooking = catchAsyncFunc(async (req, res, next) => {
 
   const result = await Booking.findByIdAndUpdate(bookingId, bookingData, {
     new: true,
-    runValidators: true,
-    // userFindANdModify: false,
+    // runValidators: true,
+    // useFindAndModify: false,
   });
   return helper.sendSuccess(
     res,

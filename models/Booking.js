@@ -16,7 +16,6 @@ const bookingSchema = new Schema(
     wishlist: {
       type: Schema.Types.ObjectId,
       ref: "wishlist",
-      required: true,
     },
     checkInDate: {
       type: Date,

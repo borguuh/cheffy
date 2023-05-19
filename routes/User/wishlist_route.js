@@ -9,7 +9,7 @@ const {
   deleteWishlist,
 } = require("../../controllers/User/wishlist_controller");
 
-router.get("/get_wishlist", getWishlists);
+router.get("/get_wishlists", getWishlists);
 router.get(
   "/get_user_wishlist",
   // IsAuth,

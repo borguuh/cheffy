@@ -17,6 +17,28 @@ exports.getRoomates = catchAsyncFunc(async (req, res, next) => {
   return helper.sendSuccess(res, result, req, "Success");
 });
 
+// searchByRoomatesCount
+
+exports.searchRoomates = catchAsyncFunc(async (req, res, next) => {
+  const occupation = req.query.occupation
+    ? req.query.occupation.toString()
+    : "";
+  const interests = req.query.interests ? req.query.interests.toString() : "";
+  const language = req.query.language ? req.query.language.toString() : "";
+  const bio = req.query.bio ? req.query.bio.toString() : "";
+
+  const results = await Roomate.find({
+    $or: [
+      { bio: { $regex: bio, $options: "i" } },
+      { occupation: { $regex: occupation, $options: "i" } },
+      { language: { $regex: language, $options: "i" } },
+      { interests: { $regex: interests, $options: "i" } },
+    ],
+  });
+
+  res.status(200).json({ results });
+});
+
 exports.addRoomate = catchAsyncFunc(async (req, res, next) => {
   const roomateData = req.body;
   roomateData.user = req.query.user_id;

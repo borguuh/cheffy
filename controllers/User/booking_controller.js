@@ -15,8 +15,8 @@ exports.getUserBooking = catchAsyncFunc(async (req, res, next) => {
   return helper.sendSuccess(res, result, req, "Success");
 });
 exports.getBookingById = catchAsyncFunc(async (req, res, next) => {
-  const { bookingId } = req.query;
-  const result = await Booking.find({ _id: bookingId });
+  const { booking_id } = req.query;
+  const result = await Booking.find({ _id: booking_id });
   return helper.sendSuccess(res, result, req, "Success");
 });
 exports.addBooking = catchAsyncFunc(async (req, res, next) => {

@@ -17,7 +17,31 @@ exports.getRoomates = catchAsyncFunc(async (req, res, next) => {
   return helper.sendSuccess(res, result, req, "Success");
 });
 
-// searchByRoomatesCount
+exports.searchByRoomatesCount = catchAsyncFunc(async (req, res, next) => {
+  const userId = req.query.userId;
+
+  try {
+    const roommates = await Roomate.find({ user: userId });
+
+    const roommateArray = roommates.map((roommate) => {
+      return {
+        id: roommate._id,
+        first_name: roommate.first_name,
+        last_name: roommate.last_name,
+      };
+    });
+
+    const roommateCount = roommateArray.length;
+
+    console.log("Number of roommates:", roommateCount);
+    console.log("Roommate array:", roommateArray);
+
+    res.json(roommateArray);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 exports.searchRoomates = catchAsyncFunc(async (req, res, next) => {
   const occupation = req.query.occupation

@@ -19,6 +19,42 @@ exports.getBookingById = catchAsyncFunc(async (req, res, next) => {
   const result = await Booking.find({ _id: booking_id });
   return helper.sendSuccess(res, result, req, "Success");
 });
+
+exports.getBookingsByPeriod = catchAsyncFunc(async (req, res, next) => {
+  const { period } = req.query;
+
+  try {
+    let startDate, endDate;
+
+    if (period === "today") {
+      startDate = new Date();
+      endDate = new Date();
+    } else if (period === "thisweek") {
+      const today = new Date();
+      const currentDay = today.getDay();
+
+      startDate = new Date(today.setDate(today.getDate() - currentDay));
+      endDate = new Date(today.setDate(today.getDate() + 6));
+    } else {
+      // Handle invalid or missing period query parameter
+      return res.status(400).json({ error: "Invalid period" });
+    }
+
+    // Find bookings between startDate and endDate
+    const bookings = await Booking.find({
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+
+    res.json(bookings);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 exports.addBooking = catchAsyncFunc(async (req, res, next) => {
   const {
     userId,

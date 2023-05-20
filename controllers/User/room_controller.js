@@ -21,6 +21,29 @@ exports.getRoomsByLocation = catchAsyncFunc(async (req, res, next) => {
   }
 });
 
+exports.getNearbyPlaces = catchAsyncFunc(async (req, res, next) => {
+  const { latitude, longitude, distance } = req.query;
+
+  try {
+    const rooms = await Room.find({
+      location: {
+        $nearSphere: {
+          $geometry: {
+            type: "Point",
+            coordinates: [parseFloat(longitude), parseFloat(latitude)],
+          },
+          $maxDistance: parseFloat(distance),
+        },
+      },
+    });
+
+    res.json(rooms);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 exports.getPlaceByType = catchAsyncFunc(async (req, res) => {
   const looking_places = req.query.looking_places
     ? req.query.looking_places.toString()

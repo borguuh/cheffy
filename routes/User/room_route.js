@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getAllRooms,
   getRoomsByLocation,
+  getNearbyPlaces,
   getPlaceByType,
   addRoom,
   updateRoom,
@@ -11,6 +12,7 @@ const {
 
 router.get("/get_all_rooms", getAllRooms);
 router.get("/get_by_location", getRoomsByLocation);
+router.get("/get_nearby_places", getNearbyPlaces);
 router.get("/get_by_type", getPlaceByType);
 router.post("/add_room", addRoom);
 router.put("/update_room", updateRoom);

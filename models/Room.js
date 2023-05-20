@@ -75,10 +75,31 @@ const roomSchema = new Schema(
       // required: true,
       enum: ["Wi-Fi", "air conditioning", "mini-bar"],
     },
+    longitude: {
+      type: Number,
+      required: true,
+    },
+    latitude: {
+      type: Number,
+      required: true,
+    },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
   },
   {
     timestamps: true,
   }
 );
+
+roomSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("room", roomSchema);

@@ -8,6 +8,30 @@ exports.getAllRooms = catchAsyncFunc(async (req, res, next) => {
   return helper.sendSuccess(res, result, req, "Success");
 });
 
+exports.getPlaceByType = catchAsyncFunc(async (req, res) => {
+  const looking_places = req.query.looking_places
+    ? req.query.looking_places.toString()
+    : "";
+  const room_type = req.query.room_type ? req.query.room_type.toString() : "";
+  const room_status = req.query.room_status
+    ? req.query.room_status.toString()
+    : "";
+  const room_feature = req.query.room_feature
+    ? req.query.room_feature.toString()
+    : "";
+
+  const results = await Room.find({
+    $or: [
+      { lookingPlaces: { $regex: looking_places, $options: "i" } },
+      { roomType: { $regex: room_type, $options: "i" } },
+      { roomStatus: { $regex: room_status, $options: "i" } },
+      { roomFeature: { $regex: room_feature, $options: "i" } },
+    ],
+  });
+
+  res.status(200).json({ results });
+});
+
 exports.addRoom = catchAsyncFunc(async (req, res, next) => {
   const roomData = req.body;
   let images = req.files.images;

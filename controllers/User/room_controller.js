@@ -8,6 +8,19 @@ exports.getAllRooms = catchAsyncFunc(async (req, res, next) => {
   return helper.sendSuccess(res, result, req, "Success");
 });
 
+exports.getRoomsByLocation = catchAsyncFunc(async (req, res, next) => {
+  const { location } = req.query;
+
+  try {
+    const rooms = await Room.find({ "details.house.address": location });
+
+    res.json(rooms);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 exports.getPlaceByType = catchAsyncFunc(async (req, res) => {
   const looking_places = req.query.looking_places
     ? req.query.looking_places.toString()

@@ -68,6 +68,19 @@ exports.getPlaceByType = catchAsyncFunc(async (req, res) => {
   res.status(200).json({ results });
 });
 
+exports.searchByRoommatesCount = catchAsyncFunc(async (req, res, next) => {
+  try {
+    const roommatesCount = parseInt(req.query.roommatesCount); // Get the desired roommates count from the query string
+
+    const rooms = await Room.find({ roomates_count: roommatesCount });
+
+    res.json(rooms);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 exports.addRoom = catchAsyncFunc(async (req, res, next) => {
   const roomData = req.body;
   let images = req.files.images;

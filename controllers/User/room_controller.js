@@ -81,6 +81,22 @@ exports.searchByRoommatesCount = catchAsyncFunc(async (req, res, next) => {
   }
 });
 
+exports.filterRoomsByPriceRange = catchAsyncFunc(async (req, res, next) => {
+  try {
+    const minPrice = parseInt(req.query.minPrice); // Minimum price
+    const maxPrice = parseInt(req.query.maxPrice); // Maximum price
+
+    const rooms = await Room.find({
+      roomPrice: { $gte: minPrice, $lte: maxPrice },
+    });
+
+    res.json(rooms);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 exports.addRoom = catchAsyncFunc(async (req, res, next) => {
   const roomData = req.body;
   let images = req.files.images;

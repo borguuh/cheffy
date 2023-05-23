@@ -97,6 +97,21 @@ exports.filterRoomsByPriceRange = catchAsyncFunc(async (req, res, next) => {
   }
 });
 
+exports.filterRoomsByFeatures = catchAsyncFunc(async (req, res, next) => {
+  try {
+    const features = req.query.features; // Features to filter by, provided as an array in the query string
+
+    const rooms = await Room.find({
+      roomFeatures: { $in: features },
+    });
+
+    res.json(rooms);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 exports.addRoom = catchAsyncFunc(async (req, res, next) => {
   const roomData = req.body;
   let images = req.files.images;

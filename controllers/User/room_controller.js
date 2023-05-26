@@ -112,6 +112,23 @@ exports.filterRoomsByFeatures = catchAsyncFunc(async (req, res, next) => {
   }
 });
 
+exports.filterHousesByDetails = catchAsyncFunc(async (req, res, next) => {
+  try {
+    const { rooms, kitchens, washrooms } = req.query; // Number of rooms, kitchens, and washrooms to filter by
+
+    const houses = await Room.find({
+      "details.house.rooms": rooms,
+      "details.house.kitchens": kitchens,
+      "details.house.washrooms": washrooms,
+    });
+
+    res.json(houses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 exports.addRoom = catchAsyncFunc(async (req, res, next) => {
   const roomData = req.body;
   let images = req.files.images;

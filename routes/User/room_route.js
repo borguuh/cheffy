@@ -8,6 +8,7 @@ const {
   searchByRoommatesCount,
   filterRoomsByPriceRange,
   filterRoomsByFeatures,
+  filterHousesByDetails,
   addRoom,
   updateRoom,
   deleteRoom,
@@ -20,6 +21,7 @@ router.get("/get_by_type", getPlaceByType);
 router.get("/rooms/search", searchByRoommatesCount);
 router.get("/rooms/filter", filterRoomsByPriceRange);
 router.get("/rooms/filter_features", filterRoomsByFeatures);
+router.get("/houses/filter", filterHousesByDetails);
 router.post("/add_room", addRoom);
 router.put("/update_room", updateRoom);
 router.delete("/perm_del_room", deleteRoom);

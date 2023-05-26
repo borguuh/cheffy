@@ -153,6 +153,23 @@ exports.addRoom = catchAsyncFunc(async (req, res, next) => {
   return helper.sendSuccess(res, result, req, "Success");
 });
 
+exports.getRoomById = catchAsyncFunc(async (req, res, next) => {
+  const roomId = req.query.id;
+
+  try {
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+
+    res.json(room);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 exports.updateRoom = catchAsyncFunc(async (req, res, next) => {
   const roomData = req.body;
   const { room_id } = req.query;

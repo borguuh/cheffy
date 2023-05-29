@@ -9,13 +9,13 @@ exports.getWishlists = catchAsyncFunc(async (req, res, next) => {
 });
 exports.getUserWishlist = catchAsyncFunc(async (req, res, next) => {
   // const user = req.user.id;
-  const { user_id } = req.body;
+  const { user_id } = req.query;
   const wishlist = await Wishlist.find({ user: user_id });
   return helper.sendSuccess(res, wishlist, req, "Success");
 });
 exports.wishlistCount = catchAsyncFunc(async (req, res, next) => {
   // const user = req.user.id;
-  const { user_id } = req.body;
+  const { user_id } = req.query;
   const wishlist = await Wishlist.find({ user: user_id });
   return helper.sendSuccess(res, { count: wishlist.length }, req, "Success");
 });

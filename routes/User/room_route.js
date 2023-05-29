@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getAllRooms,
   getRoomsByLocation,
+  searchRooms,
   getNearbyPlaces,
   getPlaceByType,
   searchByRoommatesCount,
@@ -17,9 +18,10 @@ const {
 
 router.get("/get_all_rooms", getAllRooms);
 router.get("/get_by_location", getRoomsByLocation);
+router.get("/rooms/search", searchRooms);
 router.get("/get_nearby_places", getNearbyPlaces);
 router.get("/get_by_type", getPlaceByType);
-router.get("/rooms/search", searchByRoommatesCount);
+router.get("/rooms/roommate_count", searchByRoommatesCount);
 router.get("/rooms/filter", filterRoomsByPriceRange);
 router.get("/rooms/filter_features", filterRoomsByFeatures);
 router.get("/houses/filter", filterHousesByDetails);

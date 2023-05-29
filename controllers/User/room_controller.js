@@ -21,6 +21,35 @@ exports.getRoomsByLocation = catchAsyncFunc(async (req, res, next) => {
   }
 });
 
+exports.searchRooms = catchAsyncFunc(async (req, res, next) => {
+  const { name, page } = req.query;
+  const perPage = 10; // Number of results per page
+
+  // Constructing the query for name-based search
+  const query = {
+    roomName: { $regex: name, $options: "i" }, // Case-insensitive search for room name
+  };
+
+  try {
+    const totalCount = await Room.countDocuments(query);
+    const totalPages = Math.ceil(totalCount / perPage);
+
+    const rooms = await Room.find(query)
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
+    return res.json({
+      totalRooms: totalCount,
+      totalPages,
+      currentPage: page,
+      rooms,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal Server Error");
+  }
+});
+
 exports.getNearbyPlaces = catchAsyncFunc(async (req, res, next) => {
   const { latitude, longitude, distance } = req.query;
 
@@ -184,9 +213,12 @@ exports.updateRoom = catchAsyncFunc(async (req, res, next) => {
 
     if (images) {
       for (let i = 0; i < images.length; i++) {
-        const result = await cloudinary.uploader.upload(images[i].tempFilePath, {
-          folder: "Reviews",
-        });
+        const result = await cloudinary.uploader.upload(
+          images[i].tempFilePath,
+          {
+            folder: "Reviews",
+          }
+        );
 
         imageLinks.push({
           public_id: result.public_id,

@@ -21,7 +21,39 @@ exports.getRoomsByLocation = catchAsyncFunc(async (req, res, next) => {
   }
 });
 
-exports.searchRooms = catchAsyncFunc(async (req, res, next) => {
+// Controller function to fetch all available rooms
+exports.fetchAvailableRooms = catchAsyncFunc(async (req, res, next) => {
+  const { page = 1, perPage = 10 } = req.query;
+
+  // Query to fetch available rooms
+  const query = { roomStatus: "vacant" };
+
+  try {
+    // Count the total number of available rooms
+    const totalCount = await Room.countDocuments(query);
+
+    // Calculate the total number of pages based on perPage value
+    const totalPages = Math.ceil(totalCount / perPage);
+
+    // Fetch the rooms based on query and pagination options
+    const rooms = await Room.find(query)
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
+    // Return the response with totalRooms, totalPages, currentPage, and rooms data
+    return res.json({
+      totalRooms: totalCount,
+      totalPages,
+      currentPage: page,
+      rooms,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+exports.searchRoomsByNameAndIndex = catchAsyncFunc(async (req, res, next) => {
   const { name, page } = req.query;
   const perPage = 10; // Number of results per page
 

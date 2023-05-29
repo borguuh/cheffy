@@ -131,22 +131,26 @@ exports.filterHousesByDetails = catchAsyncFunc(async (req, res, next) => {
 
 exports.addRoom = catchAsyncFunc(async (req, res, next) => {
   const roomData = req.body;
-  let images = req.files.images;
+  let images = req.files && req.files.images; // Check if req.files.images exists
   const imageLinks = [];
 
-  for (let i = 0; i < images.length; i++) {
-    const result = await cloudinary.uploader.upload(images[i].tempFilePath, {
-      folder: "Reviews",
-    });
+  if (images) {
+    for (let i = 0; i < images.length; i++) {
+      const result = await cloudinary.uploader.upload(images[i].tempFilePath, {
+        folder: "Reviews",
+      });
 
-    imageLinks.push({
-      public_id: result.public_id,
-      url: result.secure_url,
-    });
+      imageLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
+    }
   }
+
   const is_exist = await Room.findOne({ roomNumber: roomData.roomNumber });
   if (is_exist)
     return helper.sendError(403, res, { errors: "Room already exists" }, req);
+
   roomData.images = imageLinks;
 
   const result = await Room.create(roomData);
@@ -173,12 +177,41 @@ exports.getRoomById = catchAsyncFunc(async (req, res, next) => {
 exports.updateRoom = catchAsyncFunc(async (req, res, next) => {
   const roomData = req.body;
   const { room_id } = req.query;
-  const result = await Room.findByIdAndUpdate(room_id, roomData, {
-    new: true,
-    runValidators: true,
-    userFindANdModify: false,
-  });
-  return helper.sendSuccess(res, result, req, "Success");
+
+  try {
+    let images = req.files && req.files.images; // Check if req.files.images exists
+    const imageLinks = [];
+
+    if (images) {
+      for (let i = 0; i < images.length; i++) {
+        const result = await cloudinary.uploader.upload(images[i].tempFilePath, {
+          folder: "Reviews",
+        });
+
+        imageLinks.push({
+          public_id: result.public_id,
+          url: result.secure_url,
+        });
+      }
+    }
+
+    roomData.images = imageLinks;
+
+    const result = await Room.findByIdAndUpdate(room_id, roomData, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    });
+
+    if (!result) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    return res.json(result);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal Server Error");
+  }
 });
 
 exports.deleteRoom = catchAsyncFunc(async (req, res, next) => {

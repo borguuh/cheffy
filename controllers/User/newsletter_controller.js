@@ -1,4 +1,4 @@
-const NewsletterEmail = require("../../models/newsletterEmail");
+const NewsletterEmail = require("../../models/NewsletterEmail");
 
 exports.subscribeToNewsletter = async (req, res) => {
   const { email } = req.body;
@@ -29,11 +29,9 @@ exports.unsubscribeNewsletter = async (req, res) => {
     const existingEmail = await NewsletterEmail.findOne({ email });
 
     if (!existingEmail) {
-      return res
-        .status(404)
-        .json({
-          message: "Email not found in the newsletter subscription list.",
-        });
+      return res.status(404).json({
+        message: "Email not found in the newsletter subscription list.",
+      });
     }
 
     // Remove the email from the newsletter subscription list
